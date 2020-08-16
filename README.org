@@ -39,8 +39,11 @@ file types /to/ org.
 ** Dependences
 + Pandoc
 
-That's it. However ~ox-pandoc~ and ~org-gfm~ are can be useful for exporting with
-~org-pandoc-import-transient-mode~.
+That's the only hard dependency. However ~ox-pandoc~ and ~org-gfm~ can be useful for
+exporting with ~org-pandoc-import-transient-mode~.
+
+That said, as they are currently implemented, the pre-processors for /Rmarkdown/
+and /TSV/ files use ~sed~ (only really affects Windows users).
  
 * Screenshots
 
