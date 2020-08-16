@@ -24,13 +24,16 @@ This package aims to reduce this pain, in using two components:
 * Default backends
 + markdown :: associated with: =.md=, =.markdown=
 + LaTeX :: associated with: =.tex=, =.latex=
-+ reST :: (~rst~) associated with: =.rst=
++ reStructuredText :: (~rst~) associated with: =.rst=
 + ODT :: associated with: =.odt=
 + DOCX :: associated with: =.docx=
 + Jupyter Notebooks :: (~ipynb~) associated with: =.ipynb=
 + Rmarkdown :: (~markdown~) associated with: =.Rmd=, =.rmd=
 + CSV :: associated with: =.csv=
 + TSV :: (~csv~) associated with: =.tsv=
+
+Currently /Rmarkdown/ and /TSV/ files require ~sed~ in order to pre-process the file
+for Pandoc.
 
 ** Default transient-mode backends
 Please note that this mode is off by default.
@@ -43,14 +46,15 @@ The active transient backends are determined by
 + markdown :: using Org's ~gfm~ export if available, otherwise ~md~
 + ODT :: using Org's ~odt~ export
 + csv, tsv :: using ~org-table-export~
-When ~ox-pandoc~ is avalible, the following formats are also enabled by default,
+When ~ox-pandoc~ is available, the following formats are also enabled by default,
 and use ~ox-pandoc~ to export.
-+ rst
-+ docx
++ =rst=
++ =docx=
+
 * Adding new backends
 For something supported out of the box by Pandoc, it couldn't be easier ---
 just
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (org-pandoc-import-backend foo)
 #+END_SRC
 
