@@ -3,15 +3,39 @@
 
 The worst part about =org-mode=? Having to leave it.
 
-This package aims to reduce this pain, in using two components:
- 1. ~org-pandoc-import-{to,as}-org~ allows you to easily import supported non-org files with Pandoc
- 2. ~org-pandoc-import-transient-mode~ which
+This package aims to reduce this pain by leveraging [[https://pandoc.org/][Pandoc]] to convert selected
+file types /to/ org.
+
+*There are two tiers of non-org file avoidance:*
+
+ 1. The basic "get me out of here" ---
+    ~org-pandoc-import-{to,as}-org~ allows you to easily convert supported non-org
+    files to an org file/buffer with Pandoc
+ 2. "I don't even want to /see/ non-org files" --- ~org-pandoc-import-transient-mode~
+    is for you
     - (via file handlers) intercepts requests for non-org files it knows it can convert
     - uses ~org-pandoc-import-to-org~ to convert the file to a temporary org file
     - opens this org file instead
     - exports back to the original non-org file on save
 
 [[file:org-pandoc-import.svg]]
+
+* Installation
+
+** Straight
+#+BEGIN_SRC elisp
+(use-package org-pandoc-import
+  :straight (:host github
+             :repo "tecosaur/org-pandoc-import"
+             :files ("*.el" "filters" "preprocessors")))
+#+END_SRC
+** Doom
+#+BEGIN_SRC elisp
+(package! org-pandoc-import
+  :recipe (:host github
+           :repo "lisp/org-pandoc-import"
+           :files ("*.el" "filters" "preprocessors")))
+#+END_SRC
 
 * Screenshots
 
@@ -20,7 +44,6 @@ This package aims to reduce this pain, in using two components:
 [[file:screenshots/markdown.png]]
 
 [[file:screenshots/csv.png]]
-
 * Default backends
 + markdown :: associated with: =.md=, =.markdown=
 + LaTeX :: associated with: =.tex=, =.latex=
