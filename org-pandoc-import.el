@@ -164,7 +164,9 @@ If preprocessor is given, and a function, it is run with the value of IN-FILE. T
                                            expected-extensions))
                                t)
                           (buffer-file-name)
-                        (read-file-name "File to convert: " nil nil t))))
+                        (read-file-name "File to convert: " nil nil t
+                                        (when expected-extensions
+                                          (concat "." (car expected-extensions)))))))
          (in-file-processed (if (and preprocessor (functionp preprocessor))
                                 (funcall preprocessor in-file)
                               in-file))
@@ -275,7 +277,7 @@ for more information on a particular backend."
   (if-let ((backend (org-pandoc-import-find-associated-backend (or in-file (buffer-file-name)))))
       (funcall (intern (format "org-pandoc-import-%s-as-org" (symbol-name backend)))
                prompty in-file syncronous-p)
-    (funcall org-pandoc-import-as-org prompty (read-file-name "File to convert: ") syncronous-p)))
+    (funcall #'org-pandoc-import-as-org prompty (read-file-name "File to convert: " nil nil t) syncronous-p)))
 
 ;;;###autoload
 (defun org-pandoc-import-to-org (prompty &optional in-file out-file syncronous-p)
@@ -289,22 +291,23 @@ for more information on a particular backend."
   (interactive "P")
   (if-let ((backend (org-pandoc-import-find-associated-backend (or in-file (buffer-file-name)))))
       (funcall (intern (format "org-pandoc-import-%s-to-org" (symbol-name backend)))
-               prompty in-file out-file syncronous-p))
-  (funcall org-pandoc-import-to-org prompty (read-file-name "File to convert: ") syncronous-p))
+               prompty in-file out-file syncronous-p)
+    (funcall #'org-pandoc-import-to-org prompty (read-file-name "File to convert: " nil nil t) syncronous-p)))
 
 
 (defun org-pandoc-import-find-associated-backend (file)
   "Find the backend symbol from `org-pandoc-import-backends' that is last associated with
 the extension of FILE, or nil if no such association could be found."
-  (let ((ext (file-name-extension file))
-        the-backend)
-    (dolist (backend org-pandoc-import-backends)
-      (when (member ext (symbol-value
-                         (intern
-                          (format "org-pandoc-import-%s-extensions"
-                                  (symbol-name backend)))))
-        (setq the-backend backend)))
-    the-backend))
+  (when file
+    (let ((ext (file-name-extension file))
+          the-backend)
+      (dolist (backend org-pandoc-import-backends)
+        (when (member ext (symbol-value
+                           (intern
+                            (format "org-pandoc-import-%s-extensions"
+                                    (symbol-name backend)))))
+          (setq the-backend backend)))
+      the-backend)))
 
 (dont-compile
   (when org-pandoc-import-setup-defaults
