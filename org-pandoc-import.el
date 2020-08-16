@@ -235,7 +235,8 @@ If preprocessor is given, and a function, it is run with the value of IN-FILE. T
       (exit (if out-file
                 (progn (find-file out-file)
                        (kill-buffer process-buffer))
-              (switch-to-buffer process-buffer))
+              (switch-to-buffer process-buffer)
+              (goto-char (point-min)))
             (when start-time-seconds
               (message "Converted docunent in %3fs" (- (time-to-seconds (current-time)) start-time-seconds)))
             (org-mode))
