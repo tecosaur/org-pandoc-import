@@ -33,7 +33,7 @@ file types /to/ org.
 #+BEGIN_SRC elisp
 (package! org-pandoc-import
   :recipe (:host github
-           :repo "lisp/org-pandoc-import"
+           :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
 #+END_SRC
 
