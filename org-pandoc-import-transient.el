@@ -33,8 +33,12 @@ This trades a short blocking period for a long non-blocking period."
        ("docx" . org-pandoc-export-to-docx))))
   "An alist of file extensions, and associated exporters.
 Exporters can either be a string correspanding to a particular org exporter,
-or some funcion.
-An importer backend that recognises the given extension must exist."
+or a funcion that operates on the current buffer, and requires no arguments.
+An importer backend that recognises the given extension must exist.
+
+If this is changed after initialisation, you'll want to call
+`org-pandoc-import-transient--register-file-handlers' to ensure that
+the handler is called for the right file extensions."
   :type 'list
   :group 'org-pandoc-import)
 
