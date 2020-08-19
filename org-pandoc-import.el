@@ -108,7 +108,7 @@ RECOGNISED-EXTENSIONS defaults to '(\"NAME\"), and PANDOC-TYPE to \"NAME\"."
                               (expand-file-name (concat s-name ".el") org-pandoc-import-preprocessor-folder))
                              (preprocerror-func (intern (format "org-pandoc-import-%s-preprocessor" s-name))))
                          (when (file-exists-p preprocessor-file)
-                           (load-file preprocessor-file)
+                           (load preprocessor-file nil t)
                            (fboundp preprocerror-func)
                            preprocerror-func)))
          (common-args (list pandoc-type 'in-file format-extensions format-args format-filters
