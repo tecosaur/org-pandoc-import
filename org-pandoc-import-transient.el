@@ -1,5 +1,6 @@
 ;;; org-pandoc-import-transient.el -*- lexical-binding: t; -*-
 
+;; This file is part of org-pandoc-import.
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; TODO add backups, better folder names, cleanup on emacs exit
@@ -161,3 +162,5 @@ we want to re-create the associated org file."
 (make-directory (expand-file-name "org-transients" temporary-file-directory) t)
 
 (provide 'org-pandoc-import-transient)
+
+;;; org-pandoc-import-transient.el ends here

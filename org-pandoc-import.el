@@ -1,8 +1,19 @@
-;;; org-pandoc-import.el -*- lexical-binding: t; -*-
+;;; org-pandoc-import.el --- Stay in org-mode as much as possible -*- lexical-binding: t; -*-
 
-;; Copyright 2020 tecosaur
-;;
-;; This file is part of org-pandoc-import.
+;; Copyright (C) 2020 TEC
+
+;; Author: TEC <http://github/tecosaur>
+;; Maintainer: TEC <tec@tecosaur.com>
+;; Created: 16 Aug 2020
+;; Modified: August 29, 2020
+;; Version: 0.0.1
+;; Keywords: org-mode, pandoc
+;; Homepage: https://github.com/tecosaur/org-pandoc-import
+;; Package-Requires: ((emacs "26.3"))
+
+;;; License:
+
+;; This file is part of org-pandoc-import, which is not part of GNU Emacs.
 ;;
 ;; org-pandoc-import is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -18,6 +29,14 @@
 ;; along with org-pandoc-import.  If not, see <https://www.gnu.org/licenses/>.
 ;;
 ;; SPDX-License-Identifier: GPL-3.0-or-later
+
+;;; Commentary:
+
+;; Leverage Pandoc to convert non-org formats to org, and supplies a minor mode
+;; to do on-the-fly conversion tranransparently and automatically, exporting
+;; to the original format on save.
+
+;;; Code:
 
 (defgroup org-pandoc-import nil
   "Provides methods to convert other markup files to Org."
@@ -323,3 +342,5 @@ the extension of FILE, or nil if no such association could be found."
     (org-pandoc-import-backend tsv '("tsv") "csv")))
 
 (provide 'org-pandoc-import)
+
+;;; org-pandoc-import.el ends here
