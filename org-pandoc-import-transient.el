@@ -91,14 +91,17 @@ actions that may undesirably trigger the file watcher.")
   (if org-pandoc-import-transient--currently-processing
       file
     (unless (assoc file org-pandoc-import-transient--files)
-      (let* ((temp-dir (make-temp-file "org-transients/" t)) ; org pandoc transient file(s)
+      (let* ((transient-dir (expand-file-name ".opi-transient" (file-name-directory file)))
              (org-file (expand-file-name (concat (file-name-base file)
                                                  ".org+"
                                                  (file-name-extension file))
-                                         temp-dir))
+                                         transient-dir))
              (symlink-file (expand-file-name (file-name-nondirectory file)
-                                             temp-dir))
+                                             transient-dir))
              (org-pandoc-import-transient--currently-processing t))
+
+        (unless (file-exists-p transient-dir)
+          (make-directory transient-dir))
 
         (push (cons file (list :target org-file)) org-pandoc-import-transient--files)
         (push (cons symlink-file (list :symlink file)) org-pandoc-import-transient--files)
@@ -109,6 +112,7 @@ actions that may undesirably trigger the file watcher.")
 
         (message "Created org-file stub for %s (%s)" file org-file)))
 
+
     (if-let ((org-file
               (plist-get (cdr (assoc file org-pandoc-import-transient--files)) :target)))
         org-file file)))
@@ -116,8 +120,8 @@ actions that may undesirably trigger the file watcher.")
 (defun org-pandoc-import-transient--maybe-converted-org-file-handler (operation &rest args)
   (let ((inhibit-file-name-handlers
          (cons 'org-pandoc-import-transient--maybe-converted-org-file-handler
-                 (and (eq inhibit-file-name-operation operation)
-                      inhibit-file-name-handlers)))
+               (and (eq inhibit-file-name-operation operation)
+                    inhibit-file-name-handlers)))
         (inhibit-file-name-operation operation))
 
     (if (and org-pandoc-import-transient-mode (not org-pandoc-import-transient--currently-processing))
@@ -159,7 +163,6 @@ we want to re-create the associated org file."
   (plist-put (cdr (assoc (buffer-file-name) org-pandoc-import-transient--files)) :initialised nil))
 
 (org-pandoc-import-transient--register-file-handlers)
-(make-directory (expand-file-name "org-transients" temporary-file-directory) t)
 
 (provide 'org-pandoc-import-transient)
 
