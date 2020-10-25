@@ -162,7 +162,20 @@ Thus, if we re-open the file with `org-pandoc-import-transient-mode' enabled,
 we want to re-create the associated org file."
   (plist-put (cdr (assoc (buffer-file-name) org-pandoc-import-transient--files)) :initialised nil))
 
+(defun org-pandoc-import-transient--cleanup ()
+  "Remove all .opi-transient working dirs, to avoid cluttering.
+Dirs to remove are found from `org-pandoc-import-transient--files'."
+  (dolist (transient-dir
+           (delete-dups
+            (mapcar #'file-name-directory
+                    (delq nil
+                          (mapcar (lambda (item) (plist-get (cdr item) :target))
+                                  org-pandoc-import-transient--files)))))
+    (delete-directory transient-dir t))
+  (setq org-pandoc-import-transient--files nil))
+
 (org-pandoc-import-transient--register-file-handlers)
+(add-hook 'kill-emacs-hook #'org-pandoc-import-transient--cleanup)
 
 (provide 'org-pandoc-import-transient)
 
