@@ -133,6 +133,7 @@ actions that may undesirably trigger the file watcher.")
                       (start-time (time-to-seconds (current-time)))
                       (org-pandoc-import-transient--currently-processing t))
             (unless (plist-get file-info :initialised)
+              (copy-file source-file (concat source-file ".backup") nil t)
               (delete-file org-file) ; to avoid the overwrite prompt
               (message "Initialising...")
               (org-pandoc-import-to-org nil source-file org-file t)
