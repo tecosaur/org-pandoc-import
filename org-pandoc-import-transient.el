@@ -65,6 +65,11 @@ active extensions."
       (nconc file-name-handler-alist (list (cons org-transient-file-regex #'org-pandoc-import-transient--maybe-converted-org-file-handler))))
     (unless org-alist
       (nconc auto-mode-alist (list (cons org-transient-file-regex #'org-mode))))))
+(defun org-pandoc-import-transient--deregister-file-handlers ()
+  "Remove (the main) org-pandoc-import handler from `file-name-handler-alist'."
+  (setq file-name-handler-alist
+        (delete (rassoc 'org-pandoc-import-transient--file-handler file-name-handler-alist)
+                file-name-handler-alist)))
 
 (defun org-pandoc-import-transient--file-handler (operation &rest args)
   (let ((inhibit-file-name-handlers
@@ -164,8 +169,9 @@ we want to re-create the associated org file."
   (plist-put (cdr (assoc (buffer-file-name) org-pandoc-import-transient--files)) :initialised nil))
 
 (defun org-pandoc-import-transient--cleanup ()
-  "Remove all .opi-transient working dirs, to avoid cluttering.
+  "Deregister file handlers and remove all .opi-transient working dirs, to avoid cluttering.
 Dirs to remove are found from `org-pandoc-import-transient--files'."
+  (org-pandoc-import-transient--deregister-file-handlers)
   (dolist (transient-dir
            (delete-dups
             (mapcar #'file-name-directory
