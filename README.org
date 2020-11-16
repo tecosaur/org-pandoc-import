@@ -1,5 +1,5 @@
-#+TITLE: Org Pandoc Import
-#+AUTHOR: tecosaur
+#+title: Org Pandoc Import
+#+author: tecosaur
 
 The worst part about =org-mode=? Having to leave it.
 
@@ -22,19 +22,23 @@ file types /to/ org.
 
 * Installation
 ** Straight
-#+BEGIN_SRC elisp
+#+begin_SRC elisp
 (use-package org-pandoc-import
   :straight (:host github
              :repo "tecosaur/org-pandoc-import"
              :files ("*.el" "filters" "preprocessors")))
-#+END_SRC
+#+end_SRC
 ** Doom
-#+BEGIN_SRC elisp
+#+begin_SRC elisp
+;; $DOOMDIR/packages.el
 (package! org-pandoc-import
   :recipe (:host github
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
-#+END_SRC
+
+;; $DOOMDIR/config.el
+(use-package! org-pandoc-import :after org)
+#+end_SRC
 
 ** Dependences
 + Pandoc
@@ -85,9 +89,9 @@ and use ~ox-pandoc~ to export.
 * Adding new backends
 For something supported out of the box by Pandoc, it couldn't be easier ---
 just
-#+BEGIN_SRC elisp
+#+begin_SRC elisp
 (org-pandoc-import-backend foo)
-#+END_SRC
+#+end_SRC
 
 This will add ~foo~ to ~org-pandoc-import-backends~, and create the following
 functions
