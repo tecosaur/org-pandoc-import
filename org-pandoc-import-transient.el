@@ -45,13 +45,12 @@ the handler is called for the right file extensions."
 
 ;;;###autoload
 (define-minor-mode org-pandoc-import-transient-mode
-  "On-the-fly convert other markups to org and back."
+  "On-the-fly convert other markups to Org and back."
   :global t
   :init-value nil)
 
 (defun org-pandoc-import-transient--register-file-handlers ()
-  "Modify `file-name-handler-alist' to have the transient handler associated with
-active extensions."
+  "Modify `file-name-handler-alist' to have the transient handler associated with active extensions."
   (let* ((supported-extensions (mapcar #'car org-pandoc-import-transient-associations))
          (extension-regex (concat "\\." (regexp-opt supported-extensions) "\\'"))
          (entry (rassoc 'org-pandoc-import-transient--file-handler file-name-handler-alist))
@@ -72,6 +71,7 @@ active extensions."
                 file-name-handler-alist)))
 
 (defun org-pandoc-import-transient--file-handler (operation &rest args)
+  "Expand file names through `org-pandoc-import-transient--file-handler' when mode is active."
   (let ((inhibit-file-name-handlers
          (cons 'org-pandoc-import-transient--file-handler
                (and (eq inhibit-file-name-operation operation)
@@ -89,10 +89,12 @@ active extensions."
   "Global alist of special files and their properties.")
 
 (defvar org-pandoc-import-transient--currently-processing nil
-  "Global state variable to indicate that an the this package is performing
-actions that may undesirably trigger the file watcher.")
+  "Indicates that file processing is currently occuring.
+Used to prevent undesirable triggering of the file watcher.")
 
 (defun org-pandoc-import-transient--convert-file-name (file)
+  "If FILE is being seen for the first time, convert it to Org.
+Returns information on the location and state of the converted file."
   (if org-pandoc-import-transient--currently-processing
       file
     (unless (assoc file org-pandoc-import-transient--files)
@@ -123,6 +125,9 @@ actions that may undesirably trigger the file watcher.")
         org-file file)))
 
 (defun org-pandoc-import-transient--maybe-converted-org-file-handler (operation &rest args)
+  "When an org file is saved, back-propogate the changes if appropriate.
+This is done by exporting the org file to the target file type, after checking that the
+curret file is indeed a transient conversion."
   (let ((inhibit-file-name-handlers
          (cons 'org-pandoc-import-transient--maybe-converted-org-file-handler
                (and (eq inhibit-file-name-operation operation)

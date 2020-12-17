@@ -22,14 +22,14 @@ file types /to/ org.
 
 * Installation
 ** Straight
-#+begin_SRC elisp
+#+begin_src elisp
 (use-package org-pandoc-import
   :straight (:host github
              :repo "tecosaur/org-pandoc-import"
              :files ("*.el" "filters" "preprocessors")))
-#+end_SRC
+#+end_src
 ** Doom
-#+begin_SRC elisp
+#+begin_src elisp
 ;; $DOOMDIR/packages.el
 (package! org-pandoc-import
   :recipe (:host github
@@ -38,7 +38,7 @@ file types /to/ org.
 
 ;; $DOOMDIR/config.el
 (use-package! org-pandoc-import :after org)
-#+end_SRC
+#+end_src
 
 ** Dependences
 + Pandoc
@@ -56,6 +56,7 @@ and /TSV/ files use ~sed~ (only really affects Windows users).
 [[file:screenshots/markdown.png]]
 
 [[file:screenshots/csv.png]]
+
 * Default backends
 + markdown :: associated with: =.md=, =.markdown=
 + LaTeX :: associated with: =.tex=, =.latex=
@@ -89,9 +90,9 @@ and use ~ox-pandoc~ to export.
 * Adding new backends
 For something supported out of the box by Pandoc, it couldn't be easier ---
 just
-#+begin_SRC elisp
+#+begin_src elisp
 (org-pandoc-import-backend foo)
-#+end_SRC
+#+end_src
 
 This will add ~foo~ to ~org-pandoc-import-backends~, and create the following
 functions
