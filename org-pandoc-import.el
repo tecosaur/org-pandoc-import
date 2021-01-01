@@ -38,6 +38,8 @@
 
 ;;; Code:
 
+(require 'subr-x)
+
 (defgroup org-pandoc-import nil
   "Provides methods to convert other markup files to Org."
   :tag "Org Pandoc Import"
