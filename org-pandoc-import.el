@@ -33,7 +33,7 @@
 ;;; Commentary:
 
 ;; Leverage Pandoc to convert non-org formats to org, and supplies a minor mode
-;; to do on-the-fly conversion tranransparently and automatically, exporting
+;; to do on-the-fly conversion transparently and automatically, exporting
 ;; to the original format on save.
 
 ;;; Code:
