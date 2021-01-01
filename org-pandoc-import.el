@@ -130,8 +130,8 @@ RECOGNISED-EXTENSIONS defaults to '(\"NAME\"), and PANDOC-TYPE to \"NAME\"."
                              (preprocerror-func (intern (format "org-pandoc-import-%s-preprocessor" s-name))))
                          (when (file-exists-p preprocessor-file)
                            (load preprocessor-file nil t)
-                           (fboundp preprocerror-func)
-                           preprocerror-func)))
+                           (when (fboundp preprocerror-func)
+                             preprocerror-func))))
          (common-args (list pandoc-type 'in-file format-extensions format-args format-filters
                             'syncronous-p (when preprocessor `(function ,preprocessor))))
          (filters (or filters
@@ -255,15 +255,15 @@ If preprocessor is given, and a function, it is run with the value of IN-FILE. T
   "Creats a lambda sentinel for a pandoc process."
   (lambda (process _signal)
     (pcase (process-status process)
-      (exit (if out-file
-                (progn (find-file out-file)
-                       (kill-buffer process-buffer))
-              (switch-to-buffer process-buffer)
-              (goto-char (point-min)))
-            (when start-time-seconds
-              (message "Converted docunent in %3fs" (- (time-to-seconds (current-time)) start-time-seconds)))
-            (org-mode))
-      ((or stop signal failed)
+      ('exit (if out-file
+                 (progn (find-file out-file)
+                        (kill-buffer process-buffer))
+               (switch-to-buffer process-buffer)
+               (goto-char (point-min)))
+             (when start-time-seconds
+               (message "Converted docunent in %3fs" (- (time-to-seconds (current-time)) start-time-seconds)))
+             (org-mode))
+      ((or 'stop 'signal 'failed)
        (user-error (format "The pandoc process to create %s has exited unexpectedly." out-file))
        (switch-to-buffer process-buffer)))))
 
