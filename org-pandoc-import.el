@@ -6,7 +6,7 @@
 ;; Maintainer: TEC <tec@tecosaur.com>
 ;; Created: 16 Aug 2020
 ;; Modified: August 29, 2020
-;; Version: 0.0.1
+;; Version: 1.0
 ;; Keywords: org-mode, pandoc, convenience, files
 ;; Homepage: https://github.com/tecosaur/org-pandoc-import
 ;; Package-Requires: ((emacs "26.3"))
