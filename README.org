@@ -43,7 +43,7 @@ file types /to/ org.
 ** Dependences
 + Pandoc
 
-That's the only hard dependency. However ~ox-pandoc~ and ~org-gfm~ can be useful for
+That's the only hard dependency. However ~ox-pandoc~ and ~ox-gfm~ can be useful for
 exporting with ~org-pandoc-import-transient-mode~.
 
 That said, as they are currently implemented, the pre-processors for /Rmarkdown/
