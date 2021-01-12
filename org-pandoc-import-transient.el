@@ -3,8 +3,6 @@
 ;; This file is part of org-pandoc-import.
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
-;; TODO add backups, better folder names, cleanup on emacs exit
-
 (require 'org-pandoc-import)
 (require 'org)
 (require 'ox-pandoc nil t)
