@@ -1,13 +1,20 @@
-;;; org-pandoc-import-transient.el -*- lexical-binding: t; -*-
+;;; org-pandoc-import-transient.el --- Convert other formats to Org on-the-fly -*- lexical-binding: t; -*-
 
 ;; This file is part of org-pandoc-import.
 ;; SPDX-License-Identifier: GPL-3.0-or-later
+
+;;; Commentary:
+
+;; Utilise the work in `org-pandoc-import' to create a minor mode that enables
+;; on-the-fly conversion to and from Org.
+
+;;; Code:
 
 (require 'org-pandoc-import)
 (require 'org)
 (require 'ox-pandoc nil t)
 
-(defcustom org-import-transient-async-export nil
+(defcustom org-pandoc-import-transient-async-export nil
   "Whether or not to use Org's async export mode.
 This trades a short blocking period for a long non-blocking period."
   :type 'list
@@ -19,12 +26,12 @@ This trades a short blocking period for a long non-blocking period."
      ("odt" . "odt")
      ("csv" . (lambda ()
                 (unless (org-at-table-p)
-                  (user-error "Point is not inside a table."))
+                  (user-error "Point is not inside a table"))
                 (org-table-export (concat (file-name-base (buffer-file-name)) ".csv")
                                   "orgtbl-to-csv")))
      ("tsv" . (lambda ()
                 (unless (org-at-table-p)
-                  (user-error "Point is not inside a table."))
+                  (user-error "Point is not inside a table"))
                 (org-table-export (concat (file-name-base (buffer-file-name)) ".tsv")
                                   "orgtbl-to-tsv"))))
    (when (featurep 'ox-pandoc)
@@ -69,7 +76,8 @@ the handler is called for the right file extensions."
                 file-name-handler-alist)))
 
 (defun org-pandoc-import-transient--file-handler (operation &rest args)
-  "Expand file names through `org-pandoc-import-transient--file-handler' when mode is active."
+  "Expand file names through `org-pandoc-import-transient--file-handler' when
+mode is active.  Argument OPERATION is the file operation being performed."
   (let ((inhibit-file-name-handlers
          (cons 'org-pandoc-import-transient--file-handler
                (and (eq inhibit-file-name-operation operation)
@@ -124,8 +132,8 @@ Returns information on the location and state of the converted file."
 
 (defun org-pandoc-import-transient--maybe-converted-org-file-handler (operation &rest args)
   "When an org file is saved, back-propogate the changes if appropriate.
-This is done by exporting the org file to the target file type, after checking that the
-curret file is indeed a transient conversion."
+This is done by exporting the org file to the target file type, after checking
+that the curret file is indeed a transient conversion."
   (let ((inhibit-file-name-handlers
          (cons 'org-pandoc-import-transient--maybe-converted-org-file-handler
                (and (eq inhibit-file-name-operation operation)
@@ -160,21 +168,27 @@ curret file is indeed a transient conversion."
                         (start-time (time-to-seconds (current-time))))
               (if (functionp exporter)
                   (funcall exporter)
-                (org-export-to-file (intern exporter) source-file org-import-transient-async-export))
+                (org-export-to-file (intern exporter) source-file org-pandoc-import-transient-async-export))
               (message "Updated %s in %2fs." source-file (- (time-to-seconds (current-time)) start-time)))))
          (t (apply operation args)))
       (apply operation args))))
 
 (defun org-pandoc-import-transient--killed ()
-  "When this buffer is closed, we assume that the source file is liable to be modified.
+  "When this buffer is closed, we assume that the source file may be modified.
 Thus, if we re-open the file with `org-pandoc-import-transient-mode' enabled,
 we want to re-create the associated org file."
   (plist-put (cdr (assoc (buffer-file-name) org-pandoc-import-transient--files)) :initialised nil))
 
-(defun org-pandoc-import-transient--cleanup ()
-  "Deregister file handlers and remove all .opi-transient working dirs, to avoid cluttering.
-Dirs to remove are found from `org-pandoc-import-transient--files'."
-  (org-pandoc-import-transient--deregister-file-handlers)
+(defun org-pandoc-import-transient-cleanup (&optional keep-file-handlers)
+  "Remove all .opi-transient working dirs to avoid cluttering.
+Dirs to remove are found from `org-pandoc-import-transient--files'.
+
+Unless KEEP-FILE-HANDLERS is set, the file handlers will be deregistered.
+This KEEP-FILE-HANDLERS is observed when called interactively without
+a prefix argument."
+  (interactive "p")
+  (unless (eq keep-file-handlers 1)
+    (org-pandoc-import-transient--deregister-file-handlers))
   (dolist (transient-dir
            (delete-dups
             (mapcar #'file-name-directory
@@ -185,7 +199,7 @@ Dirs to remove are found from `org-pandoc-import-transient--files'."
   (setq org-pandoc-import-transient--files nil))
 
 (org-pandoc-import-transient--register-file-handlers)
-(add-hook 'kill-emacs-hook #'org-pandoc-import-transient--cleanup)
+(add-hook 'kill-emacs-hook #'org-pandoc-import-transient-cleanup)
 
 (provide 'org-pandoc-import-transient)
 

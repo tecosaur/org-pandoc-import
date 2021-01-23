@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2020 TEC
 
-;; Author: TEC <http://github/tecosaur>
+;; Author: TEC <https://github/tecosaur>
 ;; Maintainer: TEC <tec@tecosaur.com>
 ;; Created: 16 Aug 2020
 ;; Modified: August 29, 2020
@@ -32,9 +32,9 @@
 
 ;;; Commentary:
 
-;; Leverage Pandoc to convert non-org formats to org, and supplies a minor mode
-;; to do on-the-fly conversion transparently and automatically, exporting
-;; to the original format on save.
+;; Leverage Pandoc to make convert non-org formats to org trivial.
+;; Also supplies a minor mode to do on-the-fly conversion transparently
+;; and automatically, exporting to the original format on save.
 
 ;;; Code:
 
@@ -84,9 +84,10 @@ If FITERS/backend.lua exists, it will automatically be used when backend is regi
   (expand-file-name
    "preprocessors" org-pandoc-import-setup-folder)
   "A file to but pre-processors in.
-When a new backend is defined,if PREPROCESSORS/backend.el exists it will be loaded,
-and if org-pandoc-import-(backend)-preprocessor exists, it will be called
-with the input file as the argument, and the result used as the new input file."
+When a new backend is defined, if PREPROCESSORS/backend.el exists it will be
+loaded, and if org-pandoc-import-backend-preprocessor exists (where backend a
+placeholder for the actual backend name), it will be called with the input file
+as the argument, and the result used as the new input file."
   :type 'string
   :group 'org-pandoc-import)
 
@@ -94,8 +95,10 @@ with the input file as the argument, and the result used as the new input file."
   "List of arguments to apply to all backends.
 Accepts three types of atoms:
 - strings, which are passed as-is to `call-process'
-- plist keywords, which have the : replaced with single dash if the word is one charachter, else two dashes
-- functions, which are evaluated and have the result passed as one of the arguments"
+- plist keywords, which have the : replaced with single dash if the word
+  is one charachter, else two dashes
+- functions, which are evaluated and have the result passed as one
+  of the arguments"
   :type 'list
   :group 'org-pandoc-import)
 
@@ -115,10 +118,13 @@ By default, all files starting with '_' in `org-pandoc-import-filters-folder' ar
 
 ;;;###autoload
 (defmacro org-pandoc-import-backend (name &optional recognised-extensions pandoc-type filters pandoc-args)
-  "Create an export backend named NAME which is applied by default on RECOGNISED-EXTENSIONS.
-This calls pandoc, specifying the input format to be PANDOC-TYPE. PANDOC-ARGS is a list of args passed to
-the pandoc command in the same manner as `org-pandoc-import-global-args'.
-Filters can be either absolute paths to pandoc filters, or names of files within `org-pandoc-import-filters-folder'.
+  "Create an export backend named NAME.
+The backend is applied by default on files which end in a RECOGNISED-EXTENSIONS.
+This calls pandoc, specifying the input format to be PANDOC-TYPE.
+PANDOC-ARGS is a list of args passed to the pandoc command in the same manner
+as `org-pandoc-import-global-args'.
+Filters can be either absolute paths to pandoc filters, or names of files
+within `org-pandoc-import-filters-folder'.
 
 RECOGNISED-EXTENSIONS defaults to '(\"NAME\"), and PANDOC-TYPE to \"NAME\"."
   (let* ((s-name (symbol-name name))
@@ -171,19 +177,24 @@ Calls pandoc with arguments listed in `org-pandoc-import-%s-args', and filters `
 
 (defun org-pandoc-import-convert (prompty out-file pandoc-type &optional in-file expected-extensions args filters syncronous-p preprocessor)
   "Call pandoc on an IN-FILE.
-Determines the relevant paramaters to convert IN-FILE of type PANDOC-TYPE to either OUT-FILE, or a buffer (when OUT-FILE is nil).
+Determines the relevant paramaters to convert IN-FILE of type PANDOC-TYPE to
+either OUT-FILE, or a buffer (when OUT-FILE is nil).
 
-If PROMPTY is non-nill, then the value of IN-FILE and (if applicable) OUT-FILE will be always prompted for.
-A prompt for IN-FILE is also triggered when IN-FILE is nil, or its extension is not a member of EXPECTED-EXTENSIONS.
-A prompt for OUT-FILE is triggered when OUT-FILE is t, or the name of a pre-existing file.
-Pandoc is then called with arguments from the list ARGS - as described in `org-pandoc-import-global-args',
-and filters named in the list FILTERS - which can be either absolute paths to pandoc filters, or names of files within `org-pandoc-import-filters-folder'.
+If PROMPTY is non-nill, then the value of IN-FILE and (if applicable) OUT-FILE
+will be always prompted for.  A prompt for IN-FILE is also triggered when
+IN-FILE is nil, or its extension is not a member of EXPECTED-EXTENSIONS.
+A prompt for OUT-FILE is triggered when OUT-FILE is t, or the name of a
+pre-existing file.  Pandoc is then called with arguments from the list ARGS,
+as described in `org-pandoc-import-global-args', and filters named in the list
+FILTERS --- which can be either absolute paths to pandoc filters, or names of
+files within `org-pandoc-import-filters-folder'.
 
-If preprocessor is given, and a function, it is run with the value of IN-FILE. The value returned is used as the new IN-FILE."
+If preprocessor is given, and a function, it is run with the value of IN-FILE.
+The value returned is used as the new IN-FILE."
 
   (let* ((in-file (or in-file
                       (if (and (not prompty)
-                               (not (null (buffer-file-name)))
+                               (buffer-file-name)
                                (if expected-extensions
                                    (member (file-name-extension (buffer-file-name))
                                            expected-extensions))
@@ -254,7 +265,10 @@ If preprocessor is given, and a function, it is run with the value of IN-FILE. T
       (set-process-sentinel process (org-pandoc-import-process-sentinel pandoc-buffer out-file (time-to-seconds (current-time)))))))
 
 (defun org-pandoc-import-process-sentinel (process-buffer &optional out-file start-time-seconds)
-  "Creats a lambda sentinel for a pandoc process."
+  "Creats a lambda sentinel for a pandoc process, outputing to PROCESS-BUFFER.
+If OUT-FILE is given, kill the PROCESS-BUFFER and use the file in its place.
+When START-TIME-SECONDS is given, a messege is generated indicating the total
+time elapsed."
   (lambda (process _signal)
     (pcase (process-status process)
       ('exit (if out-file
@@ -266,13 +280,13 @@ If preprocessor is given, and a function, it is run with the value of IN-FILE. T
                (message "Converted docunent in %3fs" (- (time-to-seconds (current-time)) start-time-seconds)))
              (org-mode))
       ((or 'stop 'signal 'failed)
-       (user-error (format "The pandoc process to create %s has exited unexpectedly." out-file))
+       (user-error "The pandoc process to create %s has exited unexpectedly." out-file)
        (switch-to-buffer process-buffer)))))
 
 (defun org-pandoc-import-generate-convert-arguments (in-file target-format &optional out-file arguments-list)
   "Format the provided arguments to be passed to pandoc.
-Have pandoc convert IN-FILE of pandoc type TARGET-FORMAT to the org file OUT-FILE (if given),
-with arguments given by ARGUMENTS-LIST."
+Have pandoc convert IN-FILE of pandoc type TARGET-FORMAT to the org file
+OUT-FILE (if given), with arguments given by ARGUMENTS-LIST."
   (let (arguments)
     (dolist (element (reverse (append arguments-list org-pandoc-import-global-args)))
       (push
@@ -294,12 +308,15 @@ with arguments given by ARGUMENTS-LIST."
 
 ;;;###autoload
 (defun org-pandoc-import-as-org (prompty &optional in-file syncronous-p)
-  "Parse the provided file to org-mode, and open in a new buffer.
-With PROMPTY (given by the universal argument), always prompt for the IN-FILE to act on.
+  "Parse the provided file to `org-mode', and open in a new buffer.
+With PROMPTY (given by the universal argument), always prompt for the IN-FILE
+to act on.
 
-This only works so long as these is backend registered in `org-pandoc-import-backends'
-associated with the extension of the selected file. See 'org-pandoc-import-{backend}-as-org'
-for more information on a particular backend."
+This only works so long as these is backend registered in
+`org-pandoc-import-backends' associated with the extension of the selected file.
+See org-pandoc-import-{backend}-as-org for information on a particular backend.
+
+When syncronous-p is set, the pandoc process is run in a blocking manner."
   (interactive "P")
   (if-let ((backend (org-pandoc-import-find-associated-backend (or in-file (buffer-file-name)))))
       (funcall (intern (format "org-pandoc-import-%s-as-org" (symbol-name backend)))
@@ -308,13 +325,17 @@ for more information on a particular backend."
 
 ;;;###autoload
 (defun org-pandoc-import-to-org (prompty &optional in-file out-file syncronous-p)
-  "Parse the provided file to an org-mode file, and open.
-With PROMPTY (given by the universal argument), always prompt for the IN-FILE to act on,
-and the where to save the new Org file.
+  "Parse the provided file to an `org-mode' file, and open.
+With PROMPTY (given by the universal argument), always prompt for the IN-FILE to
+act on, and the where to save the new Org file.
+The result is saved to OUT-FILE, which defaults to IN-FILE but with the .org
+extension.
 
-This only works so long as these is backend registered in `org-pandoc-import-backends'
-associated with the extension of the selected file. See 'org-pandoc-import-{backend}-as-org'
-for more information on a particular backend."
+This only works so long as these is backend registered in
+`org-pandoc-import-backends' associated with the extension of the selected file.
+See org-pandoc-import-{backend}-as-org for information on a particular backend.
+
+When syncronous-p is set, the pandoc process is run in a blocking manner."
   (interactive "P")
   (if-let ((backend (org-pandoc-import-find-associated-backend (or in-file (buffer-file-name)))))
       (funcall (intern (format "org-pandoc-import-%s-to-org" (symbol-name backend)))
@@ -323,8 +344,9 @@ for more information on a particular backend."
 
 
 (defun org-pandoc-import-find-associated-backend (file)
-  "Find the backend symbol from `org-pandoc-import-backends' associated with FILE's extension.
-nil if no such association could be found."
+  "Find the backend symbol from associated with FILE's extension.
+The backend is found from searching `org-pandoc-import-backends', and is nil
+if no such match could be found."
   (when file
     (let ((ext (file-name-extension file))
           the-backend)

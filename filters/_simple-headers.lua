@@ -1,3 +1,5 @@
+-- SPDX-License-Identifier: GPL-3.0-or-later
+
 local header_ids = {}
 
 local function collect_id (header)
