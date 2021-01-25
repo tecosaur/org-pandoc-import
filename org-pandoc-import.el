@@ -105,11 +105,14 @@ Accepts three types of atoms:
 (defcustom org-pandoc-import-global-filters
   (directory-files org-pandoc-import-filters-folder nil "^_")
   "List of filters to apply to all backends.
-Either the name of a file contained in `org-pandoc-import-filters-folder', or a absolute path to a filter.
+Either the name of a file contained in `org-pandoc-import-filters-folder', or
+an absolute path to a filter.
 
-Filters ending in '.lua' will be called with '--lua-filter', and all other filters with '--filter'.
+Filters ending in '.lua' will be called with '--lua-filter', and all other
+filters with '--filter'.
 
-By default, all files starting with '_' in `org-pandoc-import-filters-folder' are used."
+By default, all files starting with '_' in `org-pandoc-import-filters-folder'
+are used."
   :type 'list
   :group 'org-pandoc-import)
 
@@ -123,7 +126,7 @@ The backend is applied by default on files which end in a RECOGNISED-EXTENSIONS.
 This calls pandoc, specifying the input format to be PANDOC-TYPE.
 PANDOC-ARGS is a list of args passed to the pandoc command in the same manner
 as `org-pandoc-import-global-args'.
-Filters can be either absolute paths to pandoc filters, or names of files
+FILTERS can be either absolute paths to pandoc filters, or names of files
 within `org-pandoc-import-filters-folder'.
 
 RECOGNISED-EXTENSIONS defaults to '(\"NAME\"), and PANDOC-TYPE to \"NAME\"."
@@ -280,7 +283,7 @@ time elapsed."
                (message "Converted docunent in %3fs" (- (time-to-seconds (current-time)) start-time-seconds)))
              (org-mode))
       ((or 'stop 'signal 'failed)
-       (user-error "The pandoc process to create %s has exited unexpectedly." out-file)
+       (user-error "The pandoc process to create %s has exited unexpectedly" out-file)
        (switch-to-buffer process-buffer)))))
 
 (defun org-pandoc-import-generate-convert-arguments (in-file target-format &optional out-file arguments-list)
@@ -316,7 +319,7 @@ This only works so long as these is backend registered in
 `org-pandoc-import-backends' associated with the extension of the selected file.
 See org-pandoc-import-{backend}-as-org for information on a particular backend.
 
-When syncronous-p is set, the pandoc process is run in a blocking manner."
+When SYNCRONOUS-P is set, the pandoc process is run in a blocking manner."
   (interactive "P")
   (if-let ((backend (org-pandoc-import-find-associated-backend (or in-file (buffer-file-name)))))
       (funcall (intern (format "org-pandoc-import-%s-as-org" (symbol-name backend)))
@@ -335,7 +338,7 @@ This only works so long as these is backend registered in
 `org-pandoc-import-backends' associated with the extension of the selected file.
 See org-pandoc-import-{backend}-as-org for information on a particular backend.
 
-When syncronous-p is set, the pandoc process is run in a blocking manner."
+When SYNCRONOUS-P is set, the pandoc process is run in a blocking manner."
   (interactive "P")
   (if-let ((backend (org-pandoc-import-find-associated-backend (or in-file (buffer-file-name)))))
       (funcall (intern (format "org-pandoc-import-%s-to-org" (symbol-name backend)))

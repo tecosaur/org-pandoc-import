@@ -76,8 +76,9 @@ the handler is called for the right file extensions."
                 file-name-handler-alist)))
 
 (defun org-pandoc-import-transient--file-handler (operation &rest args)
-  "Expand file names through `org-pandoc-import-transient--file-handler' when
-mode is active.  Argument OPERATION is the file operation being performed."
+  "Expand file names through `org-pandoc-import-transient--file-handler'.
+This only occurs when mode is active.  ARGS are passed onto the OPERATION,
+and OPERATION is the file operation being performed."
   (let ((inhibit-file-name-handlers
          (cons 'org-pandoc-import-transient--file-handler
                (and (eq inhibit-file-name-operation operation)
@@ -133,7 +134,8 @@ Returns information on the location and state of the converted file."
 (defun org-pandoc-import-transient--maybe-converted-org-file-handler (operation &rest args)
   "When an org file is saved, back-propogate the changes if appropriate.
 This is done by exporting the org file to the target file type, after checking
-that the curret file is indeed a transient conversion."
+that the curret file is indeed a transient conversion.
+Argument OPERATION is the file operation to be applied, and ARGS its arguments."
   (let ((inhibit-file-name-handlers
          (cons 'org-pandoc-import-transient--maybe-converted-org-file-handler
                (and (eq inhibit-file-name-operation operation)
