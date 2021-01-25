@@ -163,8 +163,7 @@ Argument OPERATION is the file operation to be applied, and ARGS its arguments."
           (let ((org-pandoc-import-transient--currently-processing t)
                 (org-export-with-broken-links t)
                 (org-export-with-toc nil))
-            (eval-when-compile ; prevent "unused lexical variable" warnings
-              (ignore org-export-with-broken-links org-export-with-toc))
+            (ignore org-export-with-broken-links org-export-with-toc) ; Prevent "unused lexical variable" warnings
             (apply operation args)
             (when-let* ((file (nth 2 args))
                         (source-file (plist-get (cdr (assoc file org-pandoc-import-transient--files)) :source))
