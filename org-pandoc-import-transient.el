@@ -161,6 +161,8 @@ that the curret file is indeed a transient conversion."
           (let ((org-pandoc-import-transient--currently-processing t)
                 (org-export-with-broken-links t)
                 (org-export-with-toc nil))
+            (eval-when-compile ; prevent "unused lexical variable" warnings
+              (ignore org-export-with-broken-links org-export-with-toc))
             (apply operation args)
             (when-let* ((file (nth 2 args))
                         (source-file (plist-get (cdr (assoc file org-pandoc-import-transient--files)) :source))
