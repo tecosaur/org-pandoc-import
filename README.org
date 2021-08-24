@@ -1,6 +1,11 @@
 #+title: Org Pandoc Import
 #+author: tecosaur
 
+#+html: <p><img src="https://img.shields.io/badge/Emacs-26.3+-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white">
+#+html: <img src="https://img.shields.io/badge/-Linux-fcc624?logo=linux&style=flat-square&logoColor=black">
+#+html: <img src="https://img.shields.io/badge/-MacOS-lightgrey?logo=apple&style=flat-square&logoColor=black">
+#+html: <a href="https://www.buymeacoffee.com/tecosaur"><img src="https://img.shields.io/badge/Buy_me_a_coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black"></a></p>
+
 The worst part about =org-mode=? Having to leave it.
 
 This package aims to reduce this pain by leveraging [[https://pandoc.org/][Pandoc]] to convert selected
