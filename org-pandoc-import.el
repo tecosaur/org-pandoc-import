@@ -195,17 +195,18 @@ files within `org-pandoc-import-filters-folder'.
 If preprocessor is given, and a function, it is run with the value of IN-FILE.
 The value returned is used as the new IN-FILE."
 
-  (let* ((in-file (or in-file
-                      (if (and (not prompty)
-                               (buffer-file-name)
-                               (if expected-extensions
-                                   (member (file-name-extension (buffer-file-name))
-                                           expected-extensions))
-                               t)
-                          (buffer-file-name)
-                        (read-file-name "File to convert: " nil nil t
-                                        (when expected-extensions
-                                          (concat "." (car expected-extensions)))))))
+  (let* ((in-file (expand-file-name
+                   (or in-file
+                       (if (and (not prompty)
+                                (buffer-file-name)
+                                (if expected-extensions
+                                    (member (file-name-extension (buffer-file-name))
+                                            expected-extensions))
+                                t)
+                           (buffer-file-name)
+                         (read-file-name "File to convert: " nil nil t
+                                         (when expected-extensions
+                                           (concat "." (car expected-extensions))))))))
          (in-file-processed (if (and preprocessor (functionp preprocessor))
                                 (funcall preprocessor in-file)
                               in-file))
