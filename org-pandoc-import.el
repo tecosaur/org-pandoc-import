@@ -252,6 +252,7 @@ The value returned is used as the new IN-FILE."
                          (if (functionp org-pandoc-import-buffer-name)
                              (funcall org-pandoc-import-buffer-name in-file)
                            org-pandoc-import-buffer-name)))
+         (default-directory (file-name-directory in-file))
          (process
           (if syncronous-p
               (apply #'call-process
