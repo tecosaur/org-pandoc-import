@@ -282,7 +282,7 @@ time elapsed."
                (switch-to-buffer process-buffer)
                (goto-char (point-min)))
              (when start-time-seconds
-               (message "Converted docunent in %3fs" (- (time-to-seconds (current-time)) start-time-seconds)))
+               (message "Converted document in %3fs" (- (time-to-seconds (current-time)) start-time-seconds)))
              (org-mode))
       ((or 'stop 'signal 'failed)
        (user-error "The pandoc process to create %s has exited unexpectedly" out-file)
