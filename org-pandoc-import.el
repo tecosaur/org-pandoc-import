@@ -373,7 +373,8 @@ if no such match could be found."
     (org-pandoc-import-backend rmarkdown '("rmd" "Rmd") "markdown")
     (org-pandoc-import-backend ipynb)
     (org-pandoc-import-backend csv)
-    (org-pandoc-import-backend tsv '("tsv") "csv")))
+    (org-pandoc-import-backend tsv '("tsv") "csv")
+    (org-pandoc-import-backend asciidoc '("adoc" "asciidoc" "txt") "docbook")))
 
 (provide 'org-pandoc-import)
 
