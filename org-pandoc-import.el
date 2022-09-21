@@ -353,14 +353,19 @@ When SYNCRONOUS-P is set, the pandoc process is run in a blocking manner."
 The backend is found from searching `org-pandoc-import-backends', and is nil
 if no such match could be found."
   (when file
-    (let ((ext (file-name-extension file))
-          the-backend)
-      (dolist (backend org-pandoc-import-backends)
-        (when (member ext (symbol-value
-                           (intern
-                            (format "org-pandoc-import-%s-extensions"
-                                    (symbol-name backend)))))
-          (setq the-backend backend)))
+    (let* ((ext (file-name-extension file))
+           (available-backends
+            (seq-filter (lambda (backend)
+                          (member ext (symbol-value
+                                       (intern
+                                        (format "org-pandoc-import-%s-extensions"
+                                                (symbol-name backend))))))
+                        org-pandoc-import-backends))
+           (the-backend
+            ((lambda () (if (length> available-backends 1)
+                            (intern (completing-read
+                                     "Import from: " available-backends nil t))
+                          (car available-backends))))))
       the-backend)))
 
 (dont-compile
