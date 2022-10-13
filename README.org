@@ -5,7 +5,7 @@
 #+html: <img src="https://img.shields.io/badge/stage-stable-green?style=flat-square">
 #+html: <img src="https://img.shields.io/badge/-Linux-fcc624?logo=linux&style=flat-square&logoColor=black">
 #+html: <img src="https://img.shields.io/badge/-MacOS-lightgrey?logo=apple&style=flat-square&logoColor=black">
-#+html: <a href="https://www.buymeacoffee.com/tecosaur"><img src="https://img.shields.io/badge/Buy_me_a_coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black"></a></p>
+#+html: <a href="https://liberapay.com/tec"><img src="https://shields.io/badge/support%20my%20efforts-f6c915?logo=Liberapay&style=flat-square&logoColor=black"></a></p>
 
 The worst part about =org-mode=? Having to leave it.
 
