@@ -36,7 +36,8 @@ This trades a short blocking period for a long non-blocking period."
                                   "orgtbl-to-tsv"))))
    (when (featurep 'ox-pandoc)
      '(("rst" . org-pandoc-export-to-rst)
-       ("docx" . org-pandoc-export-to-docx))))
+       ("docx" . org-pandoc-export-to-docx)
+       ("txt" . org-pandoc-export-to-asciidoc))))
   "An alist of file extensions, and associated exporters.
 Exporters can either be a string correspanding to a particular org exporter,
 or a funcion that operates on the current buffer, and requires no arguments.

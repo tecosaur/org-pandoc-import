@@ -73,9 +73,14 @@ and /TSV/ files use ~sed~ (only really affects Windows users).
 + Rmarkdown :: (~markdown~) associated with: =.Rmd=, =.rmd=
 + CSV :: associated with: =.csv=
 + TSV :: (~csv~) associated with: =.tsv=
++ AsciiDoc :: (~docbook~) associated with: =.adoc=, =.asciidoc=
 
-Currently /Rmarkdown/ and /TSV/ files require ~sed~ in order to pre-process the file
-for Pandoc.
+Currently
+
+- /Rmarkdown/ and /TSV/ files require ~sed~
+- /AsciiDoc/ requires [[https://github.com/asciidoctor/asciidoctor][~asciidoctor~]]
+
+in order to pre-process the file for Pandoc.
 
 ** Default transient-mode backends
 Please note that this mode is off by default.
@@ -92,6 +97,7 @@ When ~ox-pandoc~ is available, the following formats are also enabled by default
 and use ~ox-pandoc~ to export.
 + =rst=
 + =docx=
++ =txt= :: using ~~org-pandoc-export-to-asciidoc~
 
 * Adding new backends
 For something supported out of the box by Pandoc, it couldn't be easier ---
